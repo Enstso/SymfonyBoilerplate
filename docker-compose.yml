@@ -1,0 +1,46 @@
+version: "3.8"
+services:
+    mysql:
+        platform: linux/x86_64
+        image: 'mysql:5.7'
+        container_name: tutorial_db_symfony
+        restart: always
+        volumes:
+            - db-data:/var/lib/mysql
+        environment:
+            - MYSQL_ROOT_PASSWORD=test
+            - MYSQL_DATABASE=symfo
+        networks:
+            - tutorial
+
+    phpmyadmin:
+        image: phpmyadmin
+        platform: linux/arm64
+        container_name: tutorial_phpmyadmin
+        restart: always
+        depends_on:
+            - mysql
+        ports:
+            - 8080:80
+        environment:
+            - PMA_ARBITRARY=1
+        networks:
+            - tutorial
+
+    www:
+        build: docker/php
+        container_name: tutorial_symfony
+        ports:
+            - "8741:80"
+        volumes:
+            - ./docker/php/vhosts:/etc/apache2/sites-enabled
+            - ./:/var/www
+        restart: always
+        networks:
+            - tutorial
+
+networks:
+    tutorial:
+
+volumes:
+    db-data:
