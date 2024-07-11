@@ -19,7 +19,14 @@ RUN apt-get update \
     libzip-dev \
     libonig-dev \
     libxslt-dev \
-    p7zip-full  # Installer 7-Zip
+    wget \
+    xz-utils
+
+# Installer une version récente de 7-Zip
+RUN wget https://www.7-zip.org/a/7z2107-linux-x64.tar.xz \
+    && mkdir /usr/local/7z \
+    && tar -xvf 7z2107-linux-x64.tar.xz -C /usr/local/7z \
+    && ln -s /usr/local/7z/7zz /usr/local/bin/7zz
 
 # Configurer les locales
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
